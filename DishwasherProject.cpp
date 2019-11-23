@@ -1,96 +1,60 @@
 // DishwasherProject.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
 
 //#include <iostream.h>
 #include <stdio.h>
+//#include <16F877a.h>
+//#define RED_LED PIN_B7 /* Pin 40 */
+//#define YELLOW_LED PIN_C7 /* Pin 26 */
+//#define GREEN_LED PIN_D7 /* Pin 30 */
+//#define 7-segment display here
+//#define air hardware part here
 
-void manualMode();
-void defaultMode();
-
-int temp, timeToWash, operation;
+int timeToWash = 60;
 
 int main(void) {
-	int mode = 0, part = 3, waterLevel;
-	int doorSensor = 0, timer = 3, waterLevelSensor = 0, tempSensor = 25;
-	char startPause = 'F';
-	printf("Dish Washing Machine CE224 \n");
-	do {
-		printf("Choose Mode: (1) Default, (2) Manual \n");
-		scanf_s("%d", &mode);
-		if (mode == 1)
-			defaultMode();
-		if (mode == 2)
-			manualMode();
-	} while (mode == 0);
+	//RED LED turns on to indicate that the dishwasher is still off
+	printf("RED LED is ON\n\n");
+	//output_bit(PIN_B7, TRUE);
+	//delay_ms(3000);
+	//RED LED turns off to indicate that the dishwasher is not off anymore
+	//output_bit(PIN_B7, FALSE);
+	printf("RED LED is OFF\n\n");
 
-	printf("Choose Parts to wash: (1) Upper Only, (2) Lower Only, (3) Upper and Lower \n");
-	scanf_s("%d", &part);
+	//This is where the 7-segment display starts displaying time left for dishwasher to finish
 
-	switch (part) {
-	case 1:
-	case 2:
-		waterLevel = 0.5;
-		break;
-	case 3:
-		waterLevel = 1;
-		break;
-	}
+	//GREEN LED turns on to indiacte that the dish washing process started
+	printf("GREEN LED is ON\n\n");
+	//output_bit(PIN_D7, TRUE);
+	//GREEN LED stays on for timeToWash
+	//delay_ms(timeToWash*1000);
 
-	if (doorSensor == 0) {
-		do {
-			printf("Press (S) to Start and close the door. \n");
-			scanf_s("%d", &startPause);
-			printf("LED is On\n");
-			while (waterLevelSensor != waterLevel) {
-				waterLevelSensor++;
-			}
+	//First washing with soap...		Time Left: timeToWash
+	timeToWash = timeToWash / 2;
 
-			while (tempSensor != temp) {
-				tempSensor++;
-			}
+	//delay_ms(timeToWash*1000);
 
-			printf("Washing Operation Started!		Time Left: %p \n", &timeToWash);
-			printf("Washing with Soap Operation Started!\n");
-			timeToWash = timeToWash / 2;
-			printf("Rinsing Operation Started!		Time Left: %p \n", &timeToWash);
-			timeToWash = timeToWash / 2;
-			printf("Drying Operation Started!		Time Left: %p \n", &timeToWash);
-			timeToWash = 0;
-			startPause = 'P';
-		} while ((startPause == 's') || (startPause == 'S'));
-	}
+	//Now rinsing...		Time Left: timeToWash
+	timeToWash = timeToWash / 2;
 
-	printf("End!\nLED is Off");
+	//YELLOW LED turns on to indicate that the drying operation started
+	printf("YELLOW LED is ON\n\n");
+	//output_bit(PIN_B7, TRUE);
+	//This is where the air hardware part will start working
+	//delay_ms(timeToWash*1000);
+	//YELLOW LED turns off to indicate that the drying operation stopped
+	//output_bit(PIN_B7, FALSE);
+	printf("YELLOW LED is OFF\n\n");
+
+	//Finally drying...		Time Left: timeToWash
+	timeToWash = 0;
+
+	//GREEN LED turns off to indicate that the dishwasher operation finished
+	//output_bit(PIN_D7, FALSE);
+	printf("GREEN LED is OFF\n\n");
+
+	//RED LED turns on to indicate that the dishwasher is now off again
+	printf("RED LED is ON\n\n");
+	//output_bit(PIN_B7, TRUE);
 
 	return 0;
-}
-
-void manualMode() {
-	printf("Enter temperature: \n");
-	scanf_s("%d", &temp);
-	printf("Enter time to wash: \n");
-	scanf_s("%d", &timeToWash);
-	printf("Choose Operation: (1) Water Only, (2) Water and Soap, (3) Rinse, (4) Dry, (5) All \n");
-	scanf_s("%d", &operation);
-}
-
-void defaultMode() {
-	int whatToWash = 0;
-	printf("Choose what to wash: (1) Cups, (2) Plates, (3) Pots \n");
-	scanf_s("%d", &whatToWash);
-
-	switch (whatToWash) {
-	case 1:
-		temp = 30;
-		timeToWash = 3;
-		break;
-	case 2:
-		temp = 40;
-		timeToWash = 3;
-		break;
-	case 3:
-		temp = 60;
-		timeToWash = 3;
-		break;
-	}
 }
