@@ -28,7 +28,7 @@
 //#define SEGMENT_G2 PIN_C6
 //#define SEGMENT_DP2 PIN_C7
 //Motor
-//#define PIN_D2 air hardware part here
+//#define DC_MOTOR PIN_D2
 
 int timeToWash = 60;
 
@@ -48,23 +48,21 @@ int main(void) {
 	//delay_ms(timeToWash*1000);
 
 	//This is where the 7-segment display starts displaying time left for dishwasher to finish
-	int digits[10] = { 0B01111110, 0B00001100, 0B10110110, 0B10011110, 0B11001100, 0B11011010, 0B11111010, 0B00001110, 0B11111110, 0B11011110 };
-	int i;
+	//								  DPGFEDCBA
+	int digits[10] = { 0B00111111,
+										 0B00000110,
+										 0B01011011,
+										 0B01001111,
+										 0B01100110,
+										 0B01101101,
+										 0B01111101,
+										 0B00000111,
+										 0B01111111,
+										 0B01101111 };
 
-	int display1 = 5, display2 = 9;
-	while (TRUE) {
-		 for (i = 0; i < 10; i++) {
-			 output_b(digits[i]);
-			 delay_ms(10000);
-
-			 output_b(digits[i]);
-			 delay_ms(1000);
-		 }
-	 }
-
-	for (i = 6; i >= 0; i--)
+	for (int i = 5; i >= 0; i--)
 	{
-		//First washing with soap...		Time Left: 60 minutes
+		//First washing with soap...		Time Left: 59 minutes
 		timeToWash = timeToWash / 2;
 
 		//delay_ms(timeToWash*1000);
@@ -72,37 +70,50 @@ int main(void) {
 		//Now rinsing...		Time Left: 30 minutes
 		timeToWash = timeToWash / 2;
 
-		output_b(digits[i]);
-		delay_ms(10000);
+		//output_b(digits[i]);
+		//delay_ms(10000);
 
-		for (j = 0; j < 10; j++)
+		for (int j = 9; j >= 0; j--)
 		{
-			if(i == 1)
+			if(i == 2)
 			{
-				if(j == 5)
+				if(j <= 5)
 				{
-					//Finally drying...		Time Left: 15
-					//YELLOW LED turns on to indicate that the drying operation started
+					//output_b(digits[j]);
+					//delay_ms(1000);
+
+					//Finally drying...		Time Left: 25
+					//YELLOW LED turns on to indicate that the rinsing operation started
 					printf("YELLOW LED is ON\n\n");
 					//output_bit(PIN_D6, TRUE);
-
-					//This is where the air hardware part will start working
-					//output_bit(???, TRUE);
-					//delay_ms(timeToWash*1000);
-					//output_bit(???, FALSE);
-
-					//YELLOW LED turns off to indicate that the drying operation stopped
+				}
+			}
+			if(i == 1)
+			{
+				if(j <= 5)
+				{
+					//YELLOW LED turns off to indicate that the rinsing operation stopped
 					//output_bit(PIN_D6, FALSE);
 					printf("YELLOW LED is OFF\n\n");
+
+					//output_b(digits[j]);
+					//delay_ms(1000);
+
+					//Finally drying...		Time Left: 15
+					//output_high(DC_MOTOR);
 
 					timeToWash = 0;
 				}
 			}
-
-			output_b(digits[j]);
-			delay_ms(1000);
+			else
+			{
+				//output_b(digits[j]);
+				//delay_ms(1000);
+			}
 		}
 	}
+
+	//output_low(DC_MOTOR);
 
 	//GREEN LED turns off to indicate that the dishwasher operation finished
 	//output_bit(PIN_D7, FALSE);
