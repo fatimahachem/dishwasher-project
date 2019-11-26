@@ -57,7 +57,6 @@ int main(void) {
 	for (int i = 5; i >= 0; i--)
 	{
 		//First washing with soap...		Time Left: 59 seconds
-
 		output_b(digits[i]);
 		delay_ms(10000);
 
