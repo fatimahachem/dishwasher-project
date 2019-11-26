@@ -86,11 +86,9 @@ int main(void) {
 
 	//GREEN LED turns off to indicate that the dishwasher process finished
 	output_bit(PIN_D7, FALSE);
-	printf("GREEN LED is OFF\n\n");
 
 	//RED LED turns on to indicate that the dishwasher is now off again
 	output_bit(PIN_D5, TRUE);
-	printf("RED LED is ON\n\n");
 
 	return 0;
 }
