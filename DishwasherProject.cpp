@@ -1,6 +1,5 @@
 // DishwasherProject.cpp : This file contains the 'main' function. Program execution begins and ends there.
 
-#include <iostream.h>
 #include <stdio.h>
 #include <16F877a.h>
 //LEDs
